@@ -1,5 +1,3 @@
-import { initialCards } from "./cards";
-import { closeModal, openModal } from "./modal";
 import { openCard } from "./index";
 
 export const cardList = document.querySelector(".places__list");
@@ -42,9 +40,3 @@ export function likeCard(card) {
     .querySelector(".card__like-button")
     .classList.toggle("card__like-button_is-active");
 }
-
-initialCards.forEach(function (card) {
-  cardList.append(
-    createCard(card.name, card.link, deleteCard, likeCard, openCard)
-  );
-});
