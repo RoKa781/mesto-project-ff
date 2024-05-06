@@ -1,7 +1,3 @@
-import { openCard } from "./index";
-
-export const cardList = document.querySelector(".places__list");
-
 export function createCard(
   name,
   link,
