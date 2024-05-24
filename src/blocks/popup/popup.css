@@ -7,6 +7,10 @@
 @import url('./__button/popup__button.css');
 @import url('./__caption/popup__caption.css');
 @import url('./__image/popup__image.css');
+@import url('./__form/popup__input-error.css');
+@import url('./__form/popup__input_type_error.css');
+@import url('./__form/popup__error_visible.css');
+@import url('./__button/popup__button_disabled.css');
 
 .popup {
   font-family: 'Inter', Arial, sans-serif;
@@ -20,4 +24,8 @@
   bottom: 0;
   right: 0;
   z-index: 10;
+}
+
+.popup_delete-card {
+  min-height: 181px;
 }
