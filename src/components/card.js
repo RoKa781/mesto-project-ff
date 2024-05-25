@@ -1,11 +1,4 @@
-import { userId } from "./index";
-import { setLike, deleteLike, deleteOwnCard } from "./api";
-import { openModal, closeModal } from "./modal";
-
-const popupDeleteCard = document.querySelector(".popup_type_confirm_delete");
-const formDeleteCard = document.forms["delete-card"];
-let cardToDelete;
-let cardToDeleteId;
+import { setLike, deleteLike } from "./api";
 
 export function createCard(
   name,
@@ -13,8 +6,8 @@ export function createCard(
   likes,
   ownerId,
   cardId,
+  userId,
   deleteCallback,
-  likeCallback,
   openCallback
 ) {
   const cardTemplate = document.querySelector("#card-template").content;
@@ -43,7 +36,6 @@ export function createCard(
   });
   cardLikeButton.addEventListener("click", function (evt) {
     handleLikeButton(cardLikeButton, cardId, cardLikesCount);
-    likeCallback(cardItem);
   });
   cardImage.addEventListener("click", function () {
     openCallback({ name, link });
@@ -51,37 +43,12 @@ export function createCard(
   return cardItem;
 }
 
-export function openDeleteForm(card, cardId) {
-  openModal(popupDeleteCard);
-  cardToDelete = card;
-  cardToDeleteId = cardId;
-}
-
-export function deleteCard(card, cardId) {
-  deleteOwnCard(cardId)
-    .then(() => {
-      card.remove();
-      closeModal(popupDeleteCard);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-formDeleteCard.addEventListener("submit", function (evt) {
-  evt.preventDefault();
-  deleteCard(cardToDelete, cardToDeleteId);
-});
-
-export function likeCard(cardItem) {
-  cardItem.querySelector(".card__like-button").classList.toggle("card__like-button_is-active");
-}
-
 function handleLikeButton(cardLikeButton, cardId, cardLikesCount) {
   const likeAction = cardLikeButton.classList.contains("card__like-button_is-active") ? deleteLike : setLike;
   likeAction(cardId)
     .then((res) => {
-      cardLikesCount.textContent = res.likes.length;
+      cardLikesCount.textContent = res.likes.length; 
+      cardLikeButton.classList.toggle("card__like-button_is-active"); 
     })
     .catch((err) => {
       console.log(err);

@@ -1,5 +1,3 @@
-const popups = document.querySelectorAll(".popup");
-
 export function closeModal(modal) {
   modal.classList.remove("popup_is-opened");
   document.removeEventListener("keydown", closeOnEsc);
@@ -25,6 +23,9 @@ function closePopupHandler(popup) {
   };
 }
 
-popups.forEach(function(popup) {
-  popup.addEventListener("click", closePopupHandler(popup));
-});
+export function setEventListeners () {
+  const popups = document.querySelectorAll(".popup"); 
+  popups.forEach(function(popup) {
+    popup.addEventListener("click", closePopupHandler(popup));
+  });
+} 
