@@ -54,8 +54,8 @@ profileButton.addEventListener("click", function () {
 
 avatarButton.addEventListener("click", function () {
   openModal(buttonOpenPopupAvatar);
-  clearValidation(avatarForm, validationConfig);
   avatarInput.value = "";
+  clearValidation(avatarForm, validationConfig);
 });
 
 export function openCard(card) {
@@ -67,7 +67,9 @@ export function openCard(card) {
 
 function handleEditFormSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true);
+  const popupElement = document.querySelector(".popup_is-opened");
+  renderLoading(true, popupElement);
+
   editProfileInfo({
     name: nameInput.value,
     about: jobInput.value,
@@ -75,20 +77,23 @@ function handleEditFormSubmit(evt) {
     .then(() => {
       profileTitle.textContent = nameInput.value;
       profileDescription.textContent = jobInput.value;
-      renderLoading(false);
       closeModal(buttonOpenPopupProfile);
     })
     .catch((error) => {
       console.error("Произошла ошибка:", error);
     })
-
+    .finally(() =>{
+      renderLoading(false, popupElement);
+    })
   }
 
 profileForm.addEventListener("submit", handleEditFormSubmit);
 
 cardForm.addEventListener("submit", function (evt) {
   evt.preventDefault();
-  renderLoading(true);
+  const popupElement = document.querySelector(".popup_is-opened");
+  renderLoading(true, popupElement);
+
   postCard({
     name: cardFormName.value,
     link: cardFormLink.value,
@@ -108,29 +113,35 @@ cardForm.addEventListener("submit", function (evt) {
       );
     })
     .then(() => {
-      renderLoading(false);
       closeModal(buttonOpenPopupCard);
     })
     .catch((error) => {
       console.error("Произошла ошибка:", error);
+    })
+    .finally(() =>{
+      renderLoading(false, popupElement);
     })
   cardForm.reset();
 });
 
 avatarForm.addEventListener("submit", function (evt) {
   evt.preventDefault();
-  renderLoading(true);
+  const popupElement = document.querySelector(".popup_is-opened");
+  renderLoading(true, popupElement);  
 
   updateAvatar(avatarInput.value)
     .then((data) => {
       userAvatar.style.backgroundImage = `url('${data.avatar}')`;
-      renderLoading(false);
       closeModal(buttonOpenPopupAvatar);
     })
     .catch((error) => {
       console.error("Произошла ошибка:", error);
     })
+    .finally(() => {
+      renderLoading(false, popupElement);
+    });
 });
+
 
 formDeleteCard.addEventListener("submit", function (evt) {
   evt.preventDefault();
@@ -159,40 +170,38 @@ function openDeleteForm(card, cardId) {
 }
 
 function deleteCard(card, cardId) {
-  renderLoadingDelete(true)
+  const popupElement = document.querySelector(".popup_is-opened");
+  renderLoadingDelete(true, popupElement);  
+
   deleteOwnCard(cardId)
     .then(() => {
       card.remove();
-      renderLoadingDelete(false)
       closeModal(popupDeleteCard);
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((error) => {
+      console.error("Произошла ошибка:", error);
+    })
+    .finally(() => {
+      renderLoadingDelete(false, popupElement)
     })
 }
 
-function renderLoading(isLoading) {
-  const activePopup = document.querySelector(".popup_is-opened");
-  if (activePopup) {
-    const activeButton = activePopup.querySelector(".popup__button");
-    if (isLoading) {
-      activeButton.textContent = "Сохранение...";
-    } else {
-      activeButton.textContent = "Сохранить";
-    }
+function renderLoading(isLoading, popupElement) {
+  const activeButton = popupElement.querySelector(".popup__button");
+  if (isLoading) {
+    activeButton.textContent = "Сохранение...";
+  } else {
+    activeButton.textContent = "Сохранить";
   }
 }
 
-function renderLoadingDelete(isLoading) {
-  const activePopup = document.querySelector(".popup_is-opened");
-  if (activePopup) {
-    const activeButton = activePopup.querySelector(".popup__button");
+function renderLoadingDelete(isLoading, popupElement) {
+  const activeButton = popupElement.querySelector(".popup__button");
     if (isLoading) {
       activeButton.textContent = "Удаление...";
     } else {
       activeButton.textContent = "Да";
     }
-  }
 }
 
 Promise.all([getUserInfo(), getCards()])
